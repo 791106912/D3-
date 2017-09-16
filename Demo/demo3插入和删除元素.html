@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="a">我是原本的DIV</div>
+		<p id="b">我是原本的P</p>
+		<script src="js/d3.v4.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//插入元素涉及到 两个函数 append insert
+			//append 在选择集的后面插入元素
+			//insert 在选择集的前面插入元素
+			var body = d3.select('body');
+			var a = d3.select('#a');
+			var b = d3.select('#b');
+			body.append('p')
+				.text('我是新的P');
+			body.insert('p','#a')
+				.text('我是前面新的P');
+				
+			//删除元素remove
+			b.remove();
+		</script>
+	</body>
+</html>

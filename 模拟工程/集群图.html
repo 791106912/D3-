@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="../js/d3.v3.5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var mySvg = d3.select('body')
+			    .append('svg')
+			    .attr('height',500)
+			    .attr('width',500)
+		    
+		    var partition = d3.layout.partition()//分布图的布局
+//		    		.sort(null)//sort 设定内部的顶点的排序函数，null 表示不排序。
+		    		.size([500,500])//size 设定转换后图形的范围，这个值很重要，运用得当可变为圆形分区图。
+		    		.value(function(d) { return 1; });
+		    
+		    var data = d3.json('dcity_data.json',function(error,data){
+		    	if(error)throw error;
+		    	
+		    	var nodes = partition.nodes(data);
+			    var links = partition.links(nodes);
+		    	console.log(data)
+		    	console.log(nodes)
+		    	console.log(links)
+			    var rects = mySvg.selectAll("g")
+					  .data(nodes)
+					  .enter()
+					  .append("g");
+				var color = d3.scale.category10(); 
+				rects.append("rect")
+					.attr("x", function(d) { return d.x; })    // 顶点的 x 坐标
+					.attr("y", function(d) { return d.y; })    // 顶点的 y 坐标
+					.attr("width", function(d) { return d.dx; })  // 顶点的宽度 dx
+					.attr("height", function(d) { return d.dy; })  //顶点的高度 dy
+					.style("stroke", "#fff")
+					.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+					.on("mouseover",function(d){
+						d3.select(this)
+							.style("fill","yellow");
+					})
+					.on("mouseout",function(d){
+						d3.select(this)
+							.transition()
+							.duration(200)
+							.style("fill", function(d) { 
+								return color((d.children ? d : d.parent).name); 
+							});
+					});
+			  
+				rects.append("text")  
+					.attr("class","node_text")
+					.attr("transform",function(d,i){
+						return "translate(" + (d.x+20) + "," + (d.y+20) + ")";
+					}) 
+				.text(function(d,i) {
+					return d.name;	
+				});
+		    });
+		
+		</script>
+	</body>
+</html>

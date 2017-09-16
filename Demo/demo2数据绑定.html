@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p>123</p>
+		<p>5</p>
+		<p>789</p>
+		<div></div>
+		<div></div>
+		<div></div>
+		<script src="./js/d3.v4.js"></script>
+		<script type="text/javascript">
+			//datum() 绑定一个数据到选择集上面
+			//data() 绑定一个数组到选择集上面
+//			var data = 
+			var p = d3.select('body').selectAll('p');
+			p.datum(456);
+			
+			p.text(function(d, i){
+			    return "第 "+ i + " 个元素绑定的数据是 " + d;
+			});
+			
+			var div = d3.selectAll('body div');
+			var arr = [{'name':'sad'},
+				{'name':123},
+				{'name':45}];
+			div.data(arr)
+				.text(function(d,i){
+					return d.name
+				})
+			
+//			当选择集需要使用被绑定的数据时，常需要这么使用。其包含两个参数，其中：
+//			
+//			d 代表数据，也就是与某元素绑定的数据。
+//			i 代表索引，代表数据的索引号，从 0 开始。
+//			例如，上述例子中：第 0 个元素 apple 绑定的数据是 China。
+		</script>
+	</body>
+</html>

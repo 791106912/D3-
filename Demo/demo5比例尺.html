@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="js/d3.v4.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			//比例尺相关概念 定义域 domain 值域range
+			//线性比例尺，
+				
+			var dataset = [1.2, 2.3, 0.9, 1.5, 3.3];
+			//需求是 将最小值映射为.最大值为300
+			var min = d3.min(dataset);
+			var max = d3.max(dataset);
+			
+			var linear = d3.scale.linear()
+				.domain([min,max])
+				.range([0,300])
+			
+			linear(0.9);
+			linear(2.3);
+			linear(3.3);
+			
+			//序数比例尺
+			var index = [0, 1, 2, 3, 4];
+			var color = ["red", "blue", "green", "yellow", "black"];
+			
+			var ordinal = d3.scale.ordinal()
+		        .domain(index)
+		        .range(color);
+		
+			ordinal(0); //返回 red
+			ordinal(2); //返回 green
+			ordinal(4); //返回 black
+		</script>
+	</body>
+</html>

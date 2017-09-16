@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="js/d3.v4.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var svg = d3.select('body')
+						.append('svg')
+						.attr('height',500)
+						.attr('width',500)
+			var datalist = [0.3,1.2,4,3.5,2.7];
+			
+			var max = d3.max(datalist);
+			var min = d3.min(datalist);
+			
+			var dataset = [ 2.5 , 2.1 , 1.7 , 1.3 , 0.9 ];
+			 
+			var linear = d3.scaleLinear()
+			        .domain([0, d3.max(dataset)])
+			        .range([0, 250]);
+						
+			var rectHeight = 20;
+			svg.selectAll('rect')
+				.data(datalist)
+				.enter()
+				.append('rect')
+				.attr("x",20)
+			    .attr("y",function(d,i){
+			         return i * rectHeight;
+			    })
+			    .attr("width",function(d){
+			         return linear(d);   //在这里用比例尺
+			    })
+			    .attr("height",rectHeight-2)
+    			.attr("fill","steelblue");
+		</script>
+	</body>
+</html>

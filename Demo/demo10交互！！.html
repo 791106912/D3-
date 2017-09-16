@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.tooltip{
+				position: absolute;
+				width: 120;
+				height: auto;
+				font-family: simsun;
+				font-size: 14px;
+				text-align: center;
+				border-style: solid; 
+				border-width: 1px;
+				background-color: white;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="js/d3.v3.5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var svg = d3.select('body')
+			    .append('svg')
+			    .attr('width',500)
+			    .attr('height',300)
+			    
+		    var dataList = [10,25,30,50,12,40,9]
+		    
+		    var xAxisScale = d3.scale.ordinal()
+		    	.domain(d3.range(dataList.length))
+		    	.rangeRoundBands([0,300])
+		    	
+	    	var yAxisScale = d3.scale.linear()
+	    	    .domain([0,d3.max(dataList)])
+	    	    .range([0,300])
+    	    
+    	    var xAxis = d3.svg.axis()
+    	        .scale(xAxisScale)
+    	        .orient('bottom')
+    	    
+    	    var yAxis = d3.svg.axis()
+    	        .scale(yAxisScale)
+    	        .orient('left')
+    	    
+    	    var tooltip = d3.select("body")
+				.append("div")
+				.attr("class","tooltip")
+				.style("opacity",0.0);
+				
+	        var rect = svg.selectAll('rect')
+	        	.data(dataList)
+	        	.enter()
+	        	.append('rect')
+	        	.attr('class','myRect')
+	        	.attr('x',function(d,s){
+	        		return xAxisScale(s) + 20
+	        	})
+	        	.attr('y',function(d,s){
+	        		console.log(yAxisScale(d))
+	        		return 300-yAxisScale(d)
+	        	})
+	        	.attr('width',xAxisScale.rangeBand()-20)
+				.attr('height',function(d){
+					return yAxisScale(d)
+				})
+				.on("mouseover",function(d,i){
+		            d3.select(this)
+		              .attr("fill","yellow");
+		            console.log(d)
+		            tooltip.html("的出货量为" + "<br />" + d + " 百万台")
+			            .style("left", (d3.event.pageX) + "px")
+			            .style("top", (d3.event.pageY + 20) + "px")
+			            .style("opacity",1.0);
+					
+		        })
+		        .on("mouseout",function(d,i){
+		            d3.select(this)
+		                .transition()
+		                .duration(500)
+		                .attr("fill","steelblue");
+		        });
+		</script>
+	</body>
+</html>

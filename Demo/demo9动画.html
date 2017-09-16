@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="js/d3.v3.5.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var HEIGHT = 500;
+			var WIDTH = 500;
+			var dataList = [20,50,100,150,20,23];
+			
+			var svg = d3.select('body')
+			    .append('svg')
+		    	.attr('height',HEIGHT)
+		    	.attr('width',WIDTH)
+	    	
+			//比例尺
+			var xScale = d3.scale.ordinal()//定义一个序数比例尺
+				.domain(d3.range(dataList.length))//输入域
+				.rangeRoundBands([0,300]) //最宽和最窄
+			
+			var yScale = d3.scale.linear()
+				.domain([0,d3.max(dataList)])
+				.range([300,0])  //输出范围
+				
+			//轴
+			var xAxis = d3.svg.axis()
+				.scale(xScale)
+				.orient('bottom')
+				
+			var yAxis = d3.svg.axis()
+				.scale(yScale)
+				.orient('left')
+				
+			//画柱
+			var myRect = svg.selectAll('rect')
+				.data(dataList)
+				.enter()
+				.append('rect')
+				.attr('class','myRect')
+				.attr('x',function(d,i){
+					return xScale(i) + 40
+				})
+				.attr("y",function(d){
+				    var min = yScale.domain()[0];
+				    return yScale(min);
+				})
+				.attr('height',0)
+				.transition()
+				.delay(function(d,i){
+				    return i * 200;
+				})
+				.duration(2000)
+				.ease("bounce")
+				.attr("y",function(d){
+				    return yScale(d);
+				})
+				.attr('fill','red')
+				.attr('width',xScale.rangeBand()-20)
+				.attr('height',function(d){
+					return 300-yScale(d)
+				});
+				
+			//画轴
+			svg.append('g')
+			  .attr("class","axis")
+			  .attr("transform","translate(10,300)")
+			  .attr("fill","steelblue")
+			  .call(xAxis); 
+			  
+		  	svg.append('g')
+		  	 .attr('class','axis')
+		  	 .attr('fill','green')
+		  	  .attr("transform","translate(50,10)")
+		  	 .call(yAxis)
+		</script>
+	</body>
+</html>

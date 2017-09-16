@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="js/d3.v4.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var width = 300;
+			var height = 300;
+			var recHeight = 50;
+			var dataset = [ 250 , 210 , 170 , 130 , 90 ];
+			
+			var svg = d3.select('body')
+				.append('svg')
+				.attr('width',width)
+				.attr('height',height);
+			svg.selectAll('rect')
+				.data(dataset)
+				.enter()  //指定选择集的enter部分
+				.append('rect')
+				.attr('x',20)
+				.attr('y',function(d,i){
+					return i*recHeight;
+				})
+				.attr('width',function(d){
+					return d;
+				})
+				.attr('height',recHeight-2)
+				.attr('fill','blue')
+			//逻辑如下
+			//添加svg画布  绑定数组
+			//选中svg 添加rect 赋值
+		</script>
+	</body>
+</html>
