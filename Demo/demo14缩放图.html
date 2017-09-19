@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="./js/d3.v3.5.js"></script>
+    <script type="text/javascript">
+        var WIDTH = 500;
+        var HEIGHT = 500;
+        var mySvg = d3.select('body')
+            .append('svg')
+            .attr('height', HEIGHT)
+            .attr('width', WIDTH)
+
+        var data = []
+
+        var zoom = d3.behavior.zoom()
+            .scaleExtent([1, 10])
+            .center([250, 250])
+            .on('zoom', zoomed);
+
+        // d3.behavior 用户行为 包括两个Drag和Zoom，支持鼠标和触摸事件
+        // scaleExtent为一个包含两个数值元素的数组
+        // d3.center(center) 如果指定center为鼠标滚轮设置缩放的焦点
+
+        function zoomed() {
+            console.log(d3.event.translate)
+            console.log(d3.event.scale)
+            d3.select(this).attr("transform",
+                "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        };
+
+
+        // 画一个圆
+        var circles = [{
+            cx: 150,
+            cy: 200,
+            r: 30
+        }, {
+            cx: 250,
+            cy: 200,
+            r: 30
+        }, ];
+        var circle_g = mySvg.append('g')
+            .call(zoom); //为当前选择调用一个函数
+        circle_g.selectAll('circle')
+            .data(circles)
+            .enter()
+            .append('circle')
+            .attr('cx', function(d, i) {
+                return d.cx
+            })
+            .attr('cy', function(d) {
+                return d.cy
+            })
+            .attr('r', function(d) {
+                return d.r
+            })
+            .attr('fill', 'red')
+    </script>
+</body>
+
+</html>

@@ -65,7 +65,7 @@
 				.attr('height',function(d){
 					return yAxisScale(d)
 				})
-				.on("mouseover",function(d,i){
+				.on("mousemove",function(d,i){
 		            d3.select(this)
 		              .attr("fill","yellow");
 		            console.log(d)

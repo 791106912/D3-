@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .nodeName {
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../js/d3.v3.5.js"></script>
+    <script>
+        var height = 500,
+            width = 1000,
+            nodes = '',
+            color = d3.scale.category20c();
+        var treemap = d3.layout.treemap()
+            .size([width, height])
+            .value(function(d) {
+                return d.size;
+            });
+
+        var mySvg = d3.select('body')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+
+
+        var x = d3.scale.linear()
+            .range([0, width])
+
+        var y = d3.scale.linear()
+            .range([0, height])
+
+        var zoomed = function(d) {
+            var kx = width / d.dx, //比例
+                ky = height / d.dy;
+            // console.log(d)
+            x.domain([d.x, d.x + d.dx]);
+            y.domain([d.y, d.y + d.dy]);
+            var t = mySvg.selectAll('g.cell').transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .attr('transform', function(d) {
+                    return 'translate(' + x(d.x) + ',' + y(d.y) + ')';
+                });
+            t.select("rect")
+                .attr("width", function(d) {
+                    return kx * d.dx - 1;
+                })
+                .attr("height", function(d) {
+                    return ky * d.dy - 1;
+                })
+
+            t.select("text")
+                .attr("x", function(d) {
+                    return kx * d.dx / 2;
+                })
+                .attr("y", function(d) {
+                    return ky * d.dy / 2;
+                })
+                .style("opacity", function(d) {
+                    return kx * d.dx > d.w ? 1 : 0;
+                });
+
+            node = d;
+            d3.event.stopPropagation();
+        };
+
+        d3.json("../data/flare.json", function(err, data) {
+            node = root = data;
+            // console.log(data)
+            nodes = treemap.nodes(root)
+                .filter(function(d) {
+                    return !d.children;
+                });
+            var cells = mySvg.selectAll('g')
+                .data(nodes)
+                .enter()
+                .append('g')
+                .attr('class', 'cell')
+                .attr("transform", function(d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                })
+                .on("click", function(d) {
+                    return zoomed(node == d.parent ? root : d.parent);
+                });
+
+            cells.append('rect')
+                .attr('width', function(d) {
+                    return d.dx - 1
+                })
+                // .attr("x", function(d) {
+                //     return d.x;
+                // })
+                // .attr("y", function(d) {
+                //     return d.y;
+                // })
+                .attr('height', function(d) {
+                    return d.dy - 1
+                })
+                .style('fill', function(d) {
+                    return color(d.parent.name);
+                })
+            cells.append("svg:text")
+                .attr("x", function(d) {
+                    return d.dx / 2;
+                })
+                .attr("y", function(d) {
+                    return d.dy / 2;
+                })
+                .attr("dy", ".35em")
+                .attr("text-anchor", "middle")
+                .text(function(d) {
+                    return d.name;
+                })
+                .style("opacity", function(d) {
+                    d.w = this.getComputedTextLength();
+                    return d.dx > d.w ? 1 : 0;
+                });
+            var links = treemap.links(nodes);
+
+
+        });
+    </script>
+</body>
+
+</html>
