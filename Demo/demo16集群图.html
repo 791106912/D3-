@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .node circle {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+        
+        .node {
+            font: 12px sans-serif;
+        }
+        
+        .node .hideCircle {
+            fill: red;
+            stroke-width: 0;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1.5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../js/d3.v3.5.min.js"></script>
+    <script type="text/javascript">
+        var height = 500,
+            width = 500;
+        var mySvg = d3.select('body')
+            .append('svg')
+            .attr('height', height)
+            .attr('width', width)
+            .append('g')
+            .attr('transform', 'translate(60,0)')
+
+        var cluster = d3.layout.cluster()
+            .size([width, height - 200]) //设定尺寸，即值域
+
+        d3.json('../data/city_data.json', function(error, root) {
+            var nodes = cluster.nodes(root);
+            var links = cluster.links(nodes);
+
+            // 绘制  创建一个对角线生成器
+            var diagonal = d3.svg.diagonal()
+                .projection(function(d) {
+                    return [d.y, d.x]
+                })
+                // projection() 是一个点变换器，默认是 [ d.x , d.y ]，即保持原坐标不变，如果写成 [ d.y , d.x ] ，即是说对任意输入的顶点，都交换 x 和 y 坐标。
+
+            var link = mySvg.selectAll(".link")
+                .data(links)
+                .enter()
+                .append("path")
+                .attr("class", "link")
+                .attr("d", diagonal);
+
+            var drag = d3.behavior.drag()
+                .on('drag', dragmove)
+                .on('dragend', dragEnd)
+
+            function dragmove(d) {
+                d3.select(this)
+                    .attr("transform", "translate(" + d3.event.x + "," + d3.event.y + ")")
+                    .select('.hideCircle')
+                    .style('fill-opacity', 0.4)
+            }
+
+            function dragEnd(d) {
+                d3.select(this)
+                    .select('.hideCircle')
+                    .style('fill-opacity', 0.0)
+            }
+
+            var node = mySvg.selectAll(".node")
+                .data(nodes)
+                .enter()
+                .append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) {
+                    return "translate(" + d.y + "," + d.x + ")";
+                })
+                .call(drag)
+
+            node.append("circle")
+                .attr("r", 4.5);
+
+            node.append('circle')
+                .attr('class', 'hideCircle')
+                .style("fill-opacity", 0)
+                .attr('r', 35)
+
+            node.append("text")
+                .attr("dx", function(d) {
+                    return d.children ? -8 : 8;
+                })
+                .attr("dy", 3)
+                .style("text-anchor", function(d) {
+                    return d.children ? "end" : "start";
+                })
+                .text(function(d) {
+                    return d.name;
+                });
+        })
+    </script>
+</body>
+
+</html>
